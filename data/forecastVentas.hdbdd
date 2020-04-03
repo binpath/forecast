@@ -15,10 +15,25 @@ context forecastVentas
         key GRUPO: Integer;
         key YEAR: Integer;
         key MONTH: Integer;
-        KEY WEEK: Integer default 1;
-        KEY WEEKNUMBER: Integer default 1;
+        KEY WEEK:Integer default 1;
+        KEY WEEKNUMBER:Integer default 1;
         F_MES: AmountT;
-        F_FORWARD: AmountT;	//Forecast Closed Anual
+        F_FORWARD: AmountT;	    //
+        STATUS: StatusT;		//Status del forecast
+        CURRENCY: CurrencyT;
+    };
+    
+    @Catalog.tableType : #COLUMN
+    Entity weeklyForecast 
+    {
+        key VENDEDOR: SVendedor; 
+        key GRUPO: Integer;
+        key YEAR: Integer;
+        key MONTH: Integer;
+        KEY WEEK:Integer;
+        KEY WEEKNUMBER:Integer;
+        F_MES: AmountT;
+        F_FORWARD: AmountT;	    //Forecast Closed Anual
         STATUS: StatusT;		//Status del forecast
         CURRENCY: CurrencyT default 'USD';
     };

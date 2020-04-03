@@ -2,68 +2,35 @@ service namespace "ServiceNS.services.marketing.up"
 {
     "NSAGRO64"."ZSCP_USUARIO" as "Usuario" navigates ("ToSaleRepAssctn" as "SalesRepRef");
     
-    "ServiceNS.services.sd.forecast.data::forecastcal.vc_vendedores" as "Vendedor"
-    keys
-    (
-        "KUNNR"
-    )
-    navigates 
-    (
-        "ToSalesAbstract" as "SalesAbstract"
-    );
+    "ServiceNS.services.sd.forecast.data::forecastcal.vc_vendedores" as "Vendedor" keys("KUNNR") navigates ("ToSalesAbstract" as "SalesAbstract");
     
     association "ToSaleRepAssctn" principal "Usuario"("KUNNR")
     multiplicity "1" dependent "Vendedor"("KUNNR") multiplicity "*";
     
-    "ServiceNS.services.sd.forecast.data::forecastcal.vw_ventas_creditos_presupuesto_grupo" as "Resumen" 
-    keys generate local  "ID";
+    "ServiceNS.services.sd.forecast.data::forecastcal.vw_ventas_creditos_presupuesto_grupo" as "Resumen" keys generate local  "ID";
     
+    "ServiceNS.services.sd.forecast.data::forecastcal.vw_ventas_forecast" as "Resumen2" keys("VENDEDOR", "GRUPO") 
+        navigates ("ToForecastStorage" as "Forecast", "ToVUnidadesProductivasAssctn" as "VUnidadesPoductivasRef");
+        //navigates ("ToForecastStorage" as "Forecast", "ToVUnidadesProductivasAssctn" as "VUnidadesPoductivasRef");
+    
+    association  "ToSalesAbstract" principal "Vendedor"("KUNNR") 
+    multiplicity "1" dependent "Resumen2"("VENDEDOR") multiplicity "*";
+    
+    "ServiceNS.services.sd.forecast.data::forecastVentas.forecast" as "Forecast";
+        //update events ( after "ServiceNS.services.sd.forecast.lib:forecast.xsjslib::openNextWeek" ); //after update operation this exit will be trigger;
+    
+    association  "ToForecastStorage" principal "Resumen2"( "VENDEDOR", "GRUPO", "CURRENT_YEAR", "CURRENT_MONTH", "CURRENT_WEEK")
+    multiplicity "1" dependent "Forecast"("VENDEDOR","GRUPO","YEAR","MONTH", "WEEK") multiplicity "1";
+    
+    "ServiceNS.services.sd.forecast.data::forecastcal.vw_validacion" as "Validacion" keys ("VENDEDOR", "GRUPO");
+    
+    //De resumen a la validacion de Unidades productivas
+    association "ToVUnidadesProductivasAssctn" principal "Resumen2"("VENDEDOR","GRUPO")
+    multiplicity "1" dependent "Validacion"("VENDEDOR","GRUPO") multiplicity "1";
+
     "ServiceNS.services.sd.forecast.view::CA_RESUMEN_VENDEDORES" as "ResumenVendedores"
     keys generate local "ID"
     aggregates always; 
-    
-    "ServiceNS.services.sd.forecast.data::forecastcal.vw_ventas_forecast" as "Resumen2" 
-    keys
-    (
-        "VENDEDOR",
-        "GRUPO"
-    )
-    navigates 
-    (
-        "ToForecastStorage" as "Forecast"
-    );
-    
-    association  "ToSalesAbstract"
-    principal    "Vendedor"
-                 (
-                    "KUNNR"
-                 )
-    multiplicity "1"
-    dependent    "Resumen2"
-                 (
-                    "VENDEDOR"
-                 )
-    multiplicity "*";
-    
-    "ServiceNS.services.sd.forecast.data::forecastVentas.forecast" as "Forecast";
-    
-    association  "ToForecastStorage"
-    principal    "Resumen2"
-                 (
-                    "VENDEDOR",
-                    "GRUPO",
-                    "CURRENT_YEAR",
-                    "CURRENT_MONTH"
-                 )
-    multiplicity "1"
-    dependent    "Forecast"
-                 (
-                    "VENDEDOR",
-                    "GRUPO",
-                    "YEAR",
-                    "MONTH"
-                 )
-    multiplicity "1";
     
 }
 
