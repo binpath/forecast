@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="ca_forecast_manager" applyPrivilegeType="ANALYTIC_PRIVILEGE" dataCategory="CUBE" schemaVersion="2.3" defaultClient="$$client$$" visibility="reportingEnabled" outputViewType="Aggregation" calculationScenarioType="TREE_BASED" enforceSqlExecution="false">
+<descriptions defaultDescription="ca_forecast_sac"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="ServiceNS.services.sd.forecast.data::forecastcal.vw_ventas_creditos_presupuesto_potencial" type="DATA_BASE_VIEW">
+    <viewAttributes allViewAttributes="true"/>
+    <columnObject schemaName="NSAGRO64" columnObjectName="ServiceNS.services.sd.forecast.data::forecastcal.vw_ventas_creditos_presupuesto_potencial"/>
+  </DataSource>
+  <DataSource id="ServiceNS.services.sd.forecast.data::forecastVentas.forecast" type="DATA_BASE_TABLE">
+    <viewAttributes allViewAttributes="true"/>
+    <columnObject schemaName="NSAGRO" columnObjectName="ServiceNS.services.sd.forecast.data::forecastVentas.forecast"/>
+  </DataSource>
+</dataSources>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="MONTO_CREDITO_DISPONIBLE_USD"/>
+      <viewAttribute id="MONTO_CREDITO_APROBADO_USD"/>
+      <viewAttribute id="GRUPO"/>
+      <viewAttribute id="SOCIEDAD_CLIENTE"/>
+      <viewAttribute id="NOMBRE_VENDEDOR"/>
+      <viewAttribute id="VENDEDOR"/>
+      <viewAttribute id="LAST_YEAR_NETO_USD"/>
+      <viewAttribute id="MONTO_CREDITO_UTILIZADO_USD"/>
+      <viewAttribute id="CURRENT_YEAR_MONTH_BUDGET"/>
+      <viewAttribute id="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <viewAttribute id="LAST_YEAR_MONTH_PERCENTAGE"/>
+      <viewAttribute id="CURRENT_YEAR_BUDGET"/>
+      <viewAttribute id="LAST_YEAR_TO_DAY"/>
+      <viewAttribute id="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+      <viewAttribute id="POTENCIAL"/>
+      <viewAttribute id="LAST_YEAR_MONTH_NETO_USD"/>
+      <viewAttribute id="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <viewAttribute id="NOMBRE_GRUPO"/>
+      <viewAttribute id="POTENCIAL_TOTAL"/>
+      <viewAttribute id="CURRENT_YEAR_MONTH_NETO_USD"/>
+    
+      <viewAttribute id="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+    
+      <viewAttribute id="CURRENT_YEAR_TO_DAY"/>
+      <viewAttribute id="CURRENT_YEAR_NETO_USD"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#ServiceNS.services.sd.forecast.data::forecastcal.vw_ventas_creditos_presupuesto_potencial">
+      <mapping xsi:type="Calculation:AttributeMapping" target="MONTO_CREDITO_DISPONIBLE_USD" source="MONTO_CREDITO_DISPONIBLE_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MONTO_CREDITO_APROBADO_USD" source="MONTO_CREDITO_APROBADO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GRUPO" source="GRUPO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOCIEDAD_CLIENTE" source="SOCIEDAD_CLIENTE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="NOMBRE_VENDEDOR" source="NOMBRE_VENDEDOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="VENDEDOR" source="VENDEDOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_NETO_USD" source="LAST_YEAR_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MONTO_CREDITO_UTILIZADO_USD" source="MONTO_CREDITO_UTILIZADO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_MONTH_BUDGET" source="CURRENT_YEAR_MONTH_BUDGET"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD" source="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_MONTH_PERCENTAGE" source="LAST_YEAR_MONTH_PERCENTAGE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_BUDGET" source="CURRENT_YEAR_BUDGET"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_TO_DAY" source="LAST_YEAR_TO_DAY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD" source="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POTENCIAL" source="POTENCIAL"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_MONTH_NETO_USD" source="LAST_YEAR_MONTH_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD" source="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="NOMBRE_GRUPO" source="NOMBRE_GRUPO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POTENCIAL_TOTAL" source="POTENCIAL_TOTAL"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_MONTH_NETO_USD" source="CURRENT_YEAR_MONTH_NETO_USD"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD" source="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+    
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_TO_DAY" source="CURRENT_YEAR_TO_DAY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_NETO_USD" source="CURRENT_YEAR_NETO_USD"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Forecast">
+    <viewAttributes>
+      <viewAttribute id="CURRENCY"/>
+      <viewAttribute id="F_FORWARD"/>
+      <viewAttribute id="F_MES"/>
+      <viewAttribute id="GRUPO"/>
+      <viewAttribute id="MONTH"/>
+      <viewAttribute id="VENDEDOR"/>
+      <viewAttribute id="YEAR"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#ServiceNS.services.sd.forecast.data::forecastVentas.forecast">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENCY" source="CURRENCY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="F_FORWARD" source="F_FORWARD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="F_MES" source="F_MES"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GRUPO" source="GRUPO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="VENDEDOR" source="VENDEDOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinType="inner">
+    <viewAttributes>
+      <viewAttribute id="MONTO_CREDITO_DISPONIBLE_USD"/>
+      <viewAttribute id="MONTO_CREDITO_APROBADO_USD"/>
+      <viewAttribute id="GRUPO"/>
+      <viewAttribute id="SOCIEDAD_CLIENTE"/>
+      <viewAttribute id="NOMBRE_VENDEDOR"/>
+      <viewAttribute id="VENDEDOR"/>
+      <viewAttribute id="LAST_YEAR_NETO_USD"/>
+      <viewAttribute id="MONTO_CREDITO_UTILIZADO_USD"/>
+      <viewAttribute id="CURRENT_YEAR_MONTH_BUDGET"/>
+      <viewAttribute id="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <viewAttribute id="LAST_YEAR_MONTH_PERCENTAGE"/>
+      <viewAttribute id="CURRENT_YEAR_BUDGET"/>
+      <viewAttribute id="LAST_YEAR_TO_DAY"/>
+      <viewAttribute id="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+      <viewAttribute id="POTENCIAL"/>
+      <viewAttribute id="LAST_YEAR_MONTH_NETO_USD"/>
+      <viewAttribute id="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <viewAttribute id="NOMBRE_GRUPO"/>
+      <viewAttribute id="POTENCIAL_TOTAL"/>
+      <viewAttribute id="CURRENT_YEAR_MONTH_NETO_USD"/>
+      <viewAttribute id="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+      <viewAttribute id="CURRENT_YEAR_TO_DAY"/>
+      <viewAttribute id="CURRENT_YEAR_NETO_USD"/>
+      <viewAttribute id="CURRENCY"/>
+      <viewAttribute id="F_FORWARD"/>
+      <viewAttribute id="F_MES"/>
+      <viewAttribute id="MONTH"/>
+      <viewAttribute id="YEAR"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#Projection_1">
+      <mapping xsi:type="Calculation:AttributeMapping" target="MONTO_CREDITO_DISPONIBLE_USD" source="MONTO_CREDITO_DISPONIBLE_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MONTO_CREDITO_APROBADO_USD" source="MONTO_CREDITO_APROBADO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GRUPO" source="GRUPO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOCIEDAD_CLIENTE" source="SOCIEDAD_CLIENTE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="NOMBRE_VENDEDOR" source="NOMBRE_VENDEDOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="VENDEDOR" source="VENDEDOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_NETO_USD" source="LAST_YEAR_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MONTO_CREDITO_UTILIZADO_USD" source="MONTO_CREDITO_UTILIZADO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_MONTH_BUDGET" source="CURRENT_YEAR_MONTH_BUDGET"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD" source="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_MONTH_PERCENTAGE" source="LAST_YEAR_MONTH_PERCENTAGE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_BUDGET" source="CURRENT_YEAR_BUDGET"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_TO_DAY" source="LAST_YEAR_TO_DAY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD" source="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POTENCIAL" source="POTENCIAL"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_MONTH_NETO_USD" source="LAST_YEAR_MONTH_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD" source="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="NOMBRE_GRUPO" source="NOMBRE_GRUPO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="POTENCIAL_TOTAL" source="POTENCIAL_TOTAL"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_MONTH_NETO_USD" source="CURRENT_YEAR_MONTH_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD" source="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_TO_DAY" source="CURRENT_YEAR_TO_DAY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_NETO_USD" source="CURRENT_YEAR_NETO_USD"/>
+    </input>
+    <input node="#Forecast">
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENCY" source="CURRENCY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="F_FORWARD" source="F_FORWARD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="F_MES" source="F_MES"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="VENDEDOR" source="VENDEDOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GRUPO" source="GRUPO"/>
+    </input>
+    <joinAttribute name="VENDEDOR"/>
+    <joinAttribute name="GRUPO"/>
+  </calculationView>
+</calculationViews>
+<logicalModel id="Join_1">
+  <attributes>
+    <attribute id="GRUPO" order="1" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Grupo"/>
+      <keyMapping columnObjectName="Join_1" columnName="GRUPO"/>
+    </attribute>
+    <attribute id="SOCIEDAD_CLIENTE" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Cliente"/>
+      <keyMapping columnObjectName="Join_1" columnName="SOCIEDAD_CLIENTE"/>
+    </attribute>
+    <attribute id="NOMBRE_VENDEDOR" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Vendedor"/>
+      <keyMapping columnObjectName="Join_1" columnName="NOMBRE_VENDEDOR"/>
+    </attribute>
+    <attribute id="VENDEDOR" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Vendedor Id."/>
+      <keyMapping columnObjectName="Join_1" columnName="VENDEDOR"/>
+    </attribute>
+    <attribute id="NOMBRE_GRUPO" order="11" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Nom. Grupo"/>
+      <keyMapping columnObjectName="Join_1" columnName="NOMBRE_GRUPO"/>
+    </attribute>
+    <attribute id="CURRENCY" order="16" semanticType="currencyCode" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Moneda"/>
+      <keyMapping columnObjectName="Join_1" columnName="CURRENCY"/>
+    </attribute>
+    <attribute id="MONTH" order="19" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Mes"/>
+      <keyMapping columnObjectName="Join_1" columnName="MONTH"/>
+    </attribute>
+    <attribute id="YEAR" order="20" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Año"/>
+      <keyMapping columnObjectName="Join_1" columnName="YEAR"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="LAST_YEAR_NETO_USD" order="5" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="Ventas Año Anterior"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="LAST_YEAR_NETO_USD"/>
+    </measure>
+    <measure id="CURRENT_YEAR_MONTH_BUDGET" order="6" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="Presupuesto Mes"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="CURRENT_YEAR_MONTH_BUDGET"/>
+    </measure>
+    <measure id="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD" order="7" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="Acum. Ventas mes anterior Año Anterior"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+    </measure>
+    <measure id="CURRENT_YEAR_BUDGET" order="8" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="Presupuesto Año Actual"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="CURRENT_YEAR_BUDGET"/>
+    </measure>
+    <measure id="LAST_YEAR_TO_DAY" order="9" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="LYTD"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="LAST_YEAR_TO_DAY"/>
+    </measure>
+    <measure id="LAST_YEAR_MONTH_NETO_USD" order="10" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="Ventas mes anterior año anterior"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="LAST_YEAR_MONTH_NETO_USD"/>
+    </measure>
+    <measure id="POTENCIAL_TOTAL" order="12" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="Potencial Anual"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="POTENCIAL_TOTAL"/>
+    </measure>
+    <measure id="CURRENT_YEAR_MONTH_NETO_USD" order="13" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="Total Ventas mes actual año actual"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="CURRENT_YEAR_MONTH_NETO_USD"/>
+    </measure>
+    <measure id="CURRENT_YEAR_TO_DAY" order="14" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="YTD"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="CURRENT_YEAR_TO_DAY"/>
+    </measure>
+    <measure id="CURRENT_YEAR_NETO_USD" order="15" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="Total Ventas año actual"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="CURRENT_YEAR_NETO_USD"/>
+    </measure>
+    <measure id="F_FORWARD" order="17" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="Estimación hacia adelante"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="F_FORWARD"/>
+    </measure>
+    <measure id="F_MES" order="18" semanticType="amount" aggregationType="sum" measureType="amount">
+      <descriptions defaultDescription="Estimación mes"/>
+      <unitCurrencyAttribute attributeName="CURRENCY"/>
+      <measureMapping columnObjectName="Join_1" columnName="F_MES"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="30" y="258"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Forecast" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="118" y="323"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="161" y="225"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>
