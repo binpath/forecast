@@ -1,0 +1,1008 @@
+namespace  ServiceNS.services.sd.forecast.data;
+
+@Schema:'NSAGRO64'
+
+context forecastcal {
+//
+view vc_vendedores as 
+    select 
+    from 
+        KNA1 as vendedores
+    left outer join  
+        ZSCP_USUARIO as usuario_del_vendedor_en_scp
+    on  vendedores.KUNNR = usuario_del_vendedor_en_scp.KUNVE
+    left outer join  
+        KNVP as zonal_del_vendedor_en_scp
+        on  zonal_del_vendedor_en_scp.KUNNR = usuario_del_vendedor_en_scp.KUNVE and zonal_del_vendedor_en_scp.PARVW = 'JZ'
+    left outer join  
+        ZSCP_USUARIO as usuario_zonal
+        on  zonal_del_vendedor_en_scp.KUNN2 = usuario_zonal.KUNNR and usuario_zonal.ACTIVO = 'X' 
+    inner join vw_ventas_forecast as resumen
+        on  vendedores.KUNNR = resumen.VENDEDOR 
+    distinct 
+    {
+        usuario_del_vendedor_en_scp.KUNVE as KUNNR,
+        vendedores.NAME1 as NOMBRE,
+        usuario_del_vendedor_en_scp.USUARIO,
+        usuario_del_vendedor_en_scp.TUSUARIO,
+        usuario_del_vendedor_en_scp.EMAIL,
+        zonal_del_vendedor_en_scp.KUNN2,
+        usuario_zonal.USUARIO as UZONAL,
+        usuario_zonal.NOMBRE as NZONAL,
+        usuario_zonal.EMAIL as EZONAL,
+        usuario_del_vendedor_en_scp.KUNZO,
+        usuario_del_vendedor_en_scp.KUNVE,
+        usuario_del_vendedor_en_scp.KUNJO,
+        usuario_del_vendedor_en_scp.ACTIVO,
+        SUM(resumen.POTENCIAL) as POTENCIAL,
+        SUM(resumen.F_MES) as F_MES
+    } 
+    where 
+    vendedores.KTOKD = 'ZD07' and
+    vendedores.NODEL <> 'X' and
+    usuario_del_vendedor_en_scp.ACTIVO = 'X' and 
+    ( usuario_del_vendedor_en_scp.TUSUARIO2 = 'VE' OR usuario_del_vendedor_en_scp.TUSUARIO2 = 'ZO')
+    GROUP BY 
+        usuario_del_vendedor_en_scp.KUNVE, 
+        vendedores.NAME1, 
+        usuario_del_vendedor_en_scp.USUARIO, 
+        usuario_del_vendedor_en_scp.TUSUARIO,
+        usuario_del_vendedor_en_scp.EMAIL,
+        zonal_del_vendedor_en_scp.KUNN2,
+        usuario_zonal.USUARIO,
+        usuario_zonal.NOMBRE,
+        usuario_zonal.EMAIL,
+        usuario_del_vendedor_en_scp.KUNZO, 
+        usuario_del_vendedor_en_scp.KUNVE, 
+        usuario_del_vendedor_en_scp.KUNJO, 
+        usuario_del_vendedor_en_scp.ACTIVO;
+/*view vc_vendedores as 
+    select 
+    from 
+        KNA1 as vendedores
+    left outer join  
+        ZSCP_USUARIO as usuario_del_vendedor_en_scp
+    on  vendedores.KUNNR = usuario_del_vendedor_en_scp.KUNVE
+    left outer join  
+        KNVP as zonal_del_vendedor_en_scp
+        on  zonal_del_vendedor_en_scp.KUNNR = usuario_del_vendedor_en_scp.KUNVE and zonal_del_vendedor_en_scp.PARVW = 'JZ'
+    left outer join  
+        ZSCP_USUARIO as usuario_zonal
+        on  zonal_del_vendedor_en_scp.KUNN2 = usuario_zonal.KUNNR and usuario_zonal.ACTIVO = 'X'
+    inner join vw_ventas_forecast as resumen
+        on  vendedores.KUNNR = resumen.VENDEDOR
+    distinct 
+    {
+        usuario_del_vendedor_en_scp.KUNVE as KUNNR,
+        vendedores.NAME1 as NOMBRE,
+        usuario_del_vendedor_en_scp.USUARIO,
+        usuario_del_vendedor_en_scp.TUSUARIO,
+        usuario_del_vendedor_en_scp.KUNZO,
+        usuario_del_vendedor_en_scp.KUNVE,
+        usuario_del_vendedor_en_scp.KUNJO,
+        usuario_del_vendedor_en_scp.ACTIVO,
+        SUM(resumen.POTENCIAL) as POTENCIAL,
+        SUM(resumen.F_MES) as F_MES
+    } 
+    where 
+    vendedores.KTOKD = 'ZD07' and
+    vendedores.NODEL <> 'X' and
+    usuario_del_vendedor_en_scp.ACTIVO = 'X' and 
+    ( usuario_del_vendedor_en_scp.TUSUARIO2 = 'VE' OR usuario_del_vendedor_en_scp.TUSUARIO2 = 'ZO') and
+    usuario_del_vendedor_en_scp.TUSUARIO in ('02','03','04') //02 Zonal - 03 Jefe Sucursal - 04 Vendedor
+    and usuario_del_vendedor_en_scp.KUNVE NOT IN ('0007000251','0007000343')
+    and zonal_del_vendedor_en_scp.VKORG = '1000'
+    GROUP BY 
+        usuario_del_vendedor_en_scp.KUNVE, 
+        vendedores.NAME1, 
+        usuario_del_vendedor_en_scp.USUARIO, 
+        usuario_del_vendedor_en_scp.TUSUARIO,
+        usuario_del_vendedor_en_scp.EMAIL,
+        zonal_del_vendedor_en_scp.KUNN2,
+        usuario_zonal.USUARIO,
+        usuario_zonal.NOMBRE,
+        usuario_zonal.EMAIL,
+        usuario_del_vendedor_en_scp.KUNZO, 
+        usuario_del_vendedor_en_scp.KUNVE, 
+        usuario_del_vendedor_en_scp.KUNJO, 
+        usuario_del_vendedor_en_scp.ACTIVO;
+*/
+    
+view vw_ventas_por_sociedad_cliente as
+    SELECT
+    FROM
+        KNA1 AS CLIENTE
+    INNER JOIN
+        KNVP AS CLIENT_LOOKUP
+    ON CLIENTE.KUNNR = CLIENT_LOOKUP.KUNNR
+    INNER JOIN
+        KNVP AS VENDEDOR_LOOKUP
+    ON CLIENTE.KUNNR = VENDEDOR_LOOKUP.KUNNR
+    INNER JOIN
+        KNA1 AS VENDEDORES
+    ON VENDEDOR_LOOKUP.KUNN2 = VENDEDORES.KUNNR
+    LEFT JOIN
+        ZSCP_USUARIO AS USUARIOS
+    ON VENDEDORES.KUNNR = USUARIOS.KUNVE AND USUARIOS.ACTIVO = 'X' 
+    LEFT JOIN
+        "ServiceNS.services.sd.forecast.data::fc_grupod" as GRUPO
+    ON CLIENTE.STCD1 = GRUPO.RUT
+    LEFT JOIN
+        "ServiceNS.services.sd.forecast.data::fc_grupo" as DESCRIPCION_GRUPO
+    ON GRUPO.GRUPO = DESCRIPCION_GRUPO.GRUPO
+    LEFT JOIN
+        ZSD010T1 AS VENTAS
+    ON
+        CLIENTE.KUNNR = VENTAS.KUNWE AND VENDEDOR_LOOKUP.VKORG = VENTAS.VKORG //AND VENDEDOR_LOOKUP.KUNN2 = VENTAS.KUNVE
+    LEFT JOIN 
+        ZSCP_EX_WERKS AS EXCLUSION_WERKS
+    ON VENTAS.WERKS = EXCLUSION_WERKS.WERKS
+    LEFT JOIN 
+        ZSCP_EX_FKART AS EXCLUSION_FKART
+    ON VENTAS.FKART = EXCLUSION_FKART.FKART //AND VENTAS.VKORG = EXCLUSION_FKART.BUKRS
+    //LEFT JOIN
+    //    "ServiceNS.services.marketingVendedoresyCliente.data::fc_cli_ven_v2" as CONOCE
+    //ON  CONOCE.CLIENTE = CLIENTE.KUNNR
+    { 
+    	VENDEDORES.KUNNR AS VENDEDOR,
+        VENDEDORES.NAME1 AS NOMBRE_VENDEDOR,
+        CLIENT_LOOKUP.VKORG AS SOCIEDAD_CLIENTE,
+        CLIENTE.KUNNR AS CLIENTE,
+        CLIENTE.NAME1 AS NOMBRE_CLIENTE,
+        CLIENTE.STCD1 AS RUT_CLIENTE,
+        CLIENTE.KTOKD AS TIPO_CLIENTE,
+        CLIENT_LOOKUP.KUNN2 AS CLIENTE_ID,
+        DESCRIPCION_GRUPO.GRUPO AS GRUPO,
+        DESCRIPCION_GRUPO.NOMBRE AS NOMBRE_GRUPO,
+        VENTAS.VBELN AS FACTURA,
+        VENTAS.VKBUR AS OFICINA,
+        VENTAS.FKART AS CLASEFACTURA,
+        VENTAS.SPART AS LINEA,
+        VENTAS.LIFNR AS LIFNR,
+        VENTAS.NETO_USD AS NETO_USD,
+        TO_DATE(VENTAS.FKDAT, 'YYYYMMDD') AS FECHA_VENTA,
+        EXTRACT (YEAR FROM TO_DATE(VENTAS.FKDAT, 'YYYYMMDD')) AS YEAR,
+        EXTRACT (MONTH FROM TO_DATE(VENTAS.FKDAT, 'YYYYMMDD')) AS MONTH
+    }
+    WHERE 
+        CLIENT_LOOKUP.VKORG = '1000' AND
+        CLIENT_LOOKUP.PARVW = 'AG' AND
+        CLIENTE.NODEL != 'X' AND
+        (
+            VENTAS.VKORG = CLIENT_LOOKUP.VKORG OR
+            VENTAS.VKORG is null
+        ) AND
+        VENDEDOR_LOOKUP.VKORG = '1000' AND
+        VENDEDOR_LOOKUP.PARVW = 'VE' AND
+        (
+            VENTAS.VKORG = EXCLUSION_WERKS.BUKRS OR 
+            EXCLUSION_WERKS.BUKRS IS NULL
+        ) AND
+	    (
+	        VENTAS.VKORG = EXCLUSION_FKART.BUKRS OR 
+	        EXCLUSION_FKART.BUKRS IS NULL
+        ) AND 
+    	EXCLUSION_FKART.FKART IS NULL AND
+    	EXCLUSION_WERKS.WERKS IS NULL AND
+    	VENTAS.EERR_NC != 'X' AND
+    	(
+        	CLIENTE.KTOKD = 'ZD01' OR
+        	CLIENTE.KTOKD = 'ZD08'
+    	) AND
+    	VENDEDORES.KTOKD = 'ZD07'
+    	AND USUARIOS.TUSUARIO in ('02','03','04')
+    	AND VENTAS.SPART in ('10','20'); // LINEAS DE NEGOCIO FITOSANITARIOS
+    	//AND CONOCE.CONOCE = 'X';
+
+view ca_ventas_por_sociedad_cliente as
+    SELECT
+    FROM
+        KNA1 AS CLIENTE
+    INNER JOIN
+        KNVP AS CLIENT_LOOKUP
+    ON CLIENTE.KUNNR = CLIENT_LOOKUP.KUNNR
+    INNER JOIN
+        KNVP AS VENDEDOR_LOOKUP
+    ON CLIENTE.KUNNR = VENDEDOR_LOOKUP.KUNNR
+    INNER JOIN
+        KNA1 AS VENDEDORES
+    ON VENDEDOR_LOOKUP.KUNN2 = VENDEDORES.KUNNR
+    LEFT JOIN
+        "ServiceNS.services.sd.forecast.data::fc_grupod" as GRUPO
+    ON CLIENTE.STCD1 = GRUPO.RUT
+    LEFT JOIN
+        "ServiceNS.services.sd.forecast.data::fc_grupo" as DESCRIPCION_GRUPO
+    ON GRUPO.GRUPO = DESCRIPCION_GRUPO.GRUPO
+    LEFT JOIN
+        ZSD010T1 AS VENTAS
+    ON
+        CLIENTE.KUNNR = VENTAS.KUNWE AND VENDEDOR_LOOKUP.KUNN2 = VENTAS.KUNVE
+    LEFT JOIN 
+        ZSCP_EX_WERKS AS EXCLUSION_WERKS
+    ON VENTAS.WERKS = EXCLUSION_WERKS.WERKS
+    LEFT JOIN 
+        ZSCP_EX_FKART AS EXCLUSION_FKART
+    ON VENTAS.FKART = EXCLUSION_FKART.FKART
+    {
+    	VENDEDORES.KUNNR AS VENDEDOR,
+        VENDEDORES.NAME1 AS NOMBRE_VENDEDOR,
+        CLIENT_LOOKUP.VKORG AS SOCIEDAD_CLIENTE,
+        CLIENTE.KUNNR AS CLIENTE,
+        CLIENTE.NAME1 AS NOMBRE_CLIENTE,
+        CLIENTE.STCD1 AS RUT_CLIENTE,
+        CLIENTE.KTOKD AS TIPO_CLIENTE,
+        CLIENT_LOOKUP.KUNN2 AS CLIENTE_ID,
+        DESCRIPCION_GRUPO.GRUPO AS GRUPO,
+        DESCRIPCION_GRUPO.NOMBRE AS NOMBRE_GRUPO,
+        VENTAS.NETO_USD AS NETO_USD,
+        TO_DATE(VENTAS.FKDAT, 'YYYYMMDD') AS FECHA_VENTA,
+        EXTRACT (YEAR FROM TO_DATE(VENTAS.FKDAT, 'YYYYMMDD')) AS YEAR,
+        EXTRACT (MONTH FROM TO_DATE(VENTAS.FKDAT, 'YYYYMMDD')) AS MONTH
+    }
+    WHERE
+        CLIENT_LOOKUP.VKORG != '1200' AND
+        CLIENT_LOOKUP.PARVW = 'AG' AND
+        //CLIENTE.NODEL != 'X' AND
+        (
+            VENTAS.VKORG = CLIENT_LOOKUP.VKORG OR
+            VENTAS.VKORG is null
+        ) AND
+        VENDEDOR_LOOKUP.VKORG != '1200' AND
+        VENDEDOR_LOOKUP.PARVW = 'VE' AND
+        (
+            VENTAS.VKORG = EXCLUSION_WERKS.BUKRS OR 
+            EXCLUSION_WERKS.BUKRS IS NULL
+        ) AND
+	    (
+	        VENTAS.VKORG = EXCLUSION_FKART.BUKRS OR 
+	        EXCLUSION_FKART.BUKRS IS NULL
+        ) AND 
+    	EXCLUSION_FKART.FKART IS NULL AND
+    	EXCLUSION_WERKS.WERKS IS NULL AND
+    	//VENTAS.EERR_NC != 'X' AND
+    	(
+           CLIENTE.KTOKD = 'ZD01' OR
+           CLIENTE.KTOKD = 'ZD08'
+    	) AND
+    	VENDEDORES.KTOKD = 'ZD07';
+
+
+
+view vw_currency_sociedad as 
+    SELECT
+    FROM 
+        TCURR
+    {
+        UKURS,
+        TO_DATE( TO_NVARCHAR(99999999 - GDATU) )  AS GDATU,
+        TCURR
+    }
+    WHERE
+        MANDT = 300 AND 
+        FCURR = 'USD';
+
+view vw_currency_sociedad_max_date as 
+    SELECT
+    FROM 
+        TCURR
+    {
+        MAX(TO_DATE( TO_NVARCHAR(99999999 - GDATU) ))  AS GDATU,
+        TCURR
+    }
+    WHERE
+        MANDT = 300 AND 
+        FCURR = 'USD'
+    GROUP BY 
+        TCURR;
+        
+view vw_total_ventas_por_direccion_despacho as
+    select
+    FROM 
+        vw_ventas_por_sociedad_cliente as ENTRANQUE
+    {
+    	ENTRANQUE."VENDEDOR",
+    	ENTRANQUE."NOMBRE_VENDEDOR",
+    	ENTRANQUE."SOCIEDAD_CLIENTE",
+    	ENTRANQUE."CLIENTE",
+    	ENTRANQUE."NOMBRE_CLIENTE",
+    	ENTRANQUE."RUT_CLIENTE",
+    	ENTRANQUE."CLIENTE_ID",
+    	ENTRANQUE."TIPO_CLIENTE",
+    	ENTRANQUE."GRUPO",
+    	ENTRANQUE."NOMBRE_GRUPO",
+    	CASE
+    	    WHEN ENTRANQUE."YEAR" = ( EXTRACT (YEAR FROM CURRENT_DATE) - 1 )then
+    	        SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+    	    else
+    	        0
+    	end as "LAST_YEAR_NETO_USD",
+    	CASE
+    	    WHEN ENTRANQUE."YEAR" = EXTRACT (YEAR FROM CURRENT_DATE) then
+    	        SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+    	    else
+    	        0
+    	end as "CURRENT_YEAR_NETO_USD",
+    	CASE
+    	    WHEN ENTRANQUE."YEAR" = ( EXTRACT (YEAR FROM CURRENT_DATE) - 1) AND
+    	         ENTRANQUE."MONTH" < ( EXTRACT (MONTH FROM CURRENT_DATE)) then
+    	       SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+	        else
+    	        0
+    	end as "LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD",
+    	CASE
+    	    WHEN ENTRANQUE."YEAR" = ( EXTRACT (YEAR FROM CURRENT_DATE) - 1) AND
+    	         ENTRANQUE."MONTH" <= ( EXTRACT (MONTH FROM CURRENT_DATE)) then
+    	       SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+	        else
+    	        0
+    	end as "LAST_YEAR_UNTIL_THIS_MONTH_NETO_USD",
+    	CASE
+    	    WHEN ENTRANQUE."YEAR" = ( EXTRACT (YEAR FROM CURRENT_DATE) - 1) AND
+    	         ENTRANQUE."MONTH" >= ( EXTRACT (MONTH FROM CURRENT_DATE) + 1 ) then
+    	       SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+	        else
+    	        0
+    	end as "LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD",
+    	CASE
+    	    WHEN ENTRANQUE."YEAR" = ( EXTRACT (YEAR FROM CURRENT_DATE) ) AND
+    	         ENTRANQUE."MONTH" >= ( EXTRACT (MONTH FROM CURRENT_DATE) + 1 ) then
+    	       SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+	        else
+    	        0
+    	end as "CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD",
+    	CASE
+    	    WHEN ENTRANQUE."YEAR" = ( EXTRACT (YEAR FROM CURRENT_DATE) ) AND
+    	         ENTRANQUE."MONTH" < ( EXTRACT (MONTH FROM CURRENT_DATE) ) then
+    	       SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+	        else
+    	        0
+    	end as "CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD",
+    	/*CASE
+    	    WHEN ENTRANQUE."YEAR" = ( EXTRACT (YEAR FROM CURRENT_DATE) ) AND
+    	         ENTRANQUE."MONTH" <= ( EXTRACT (MONTH FROM CURRENT_DATE) ) then
+    	       SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+	        else
+    	        0
+    	end as "CURRENT_YEAR_UNTIL_THIS_MONTH_NETO_USD",*/
+    	CASE
+    	    WHEN ENTRANQUE."YEAR" = ( EXTRACT (YEAR FROM CURRENT_DATE) ) AND
+    	         ENTRANQUE."MONTH" = ( EXTRACT (MONTH FROM CURRENT_DATE) ) then
+    	       SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+	        else
+    	        0
+    	end as "CURRENT_YEAR_MONTH_NETO_USD",
+    	CASE
+    	    WHEN ENTRANQUE."YEAR" = ( EXTRACT (YEAR FROM CURRENT_DATE) - 1) AND
+    	         ENTRANQUE."MONTH" = ( EXTRACT (MONTH FROM CURRENT_DATE) ) then
+    	       SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+	        else
+    	        0
+    	end as "LAST_YEAR_MONTH_NETO_USD",
+    	CASE
+    	    WHEN ENTRANQUE."FECHA_VENTA" BETWEEN ADD_DAYS(current_date,  - 365 - extract(DAY FROM current_date) + 1) AND 
+    	                                         ADD_DAYS(current_date,  - 365) THEN
+    	       SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+	       else
+    	        0
+    	end as "LAST_YEAR_TO_DAY",
+    	CASE
+    	    WHEN ENTRANQUE."FECHA_VENTA" BETWEEN ADD_DAYS(current_date,  - extract(DAY FROM current_date) + 1) AND 
+    	                                         current_date THEN
+    	       SUM( COALESCE(ENTRANQUE."NETO_USD", 0) )
+	       else
+    	        0
+    	end as "CURRENT_YEAR_TO_DAY"
+    }
+    group by
+        ENTRANQUE."VENDEDOR",
+    	ENTRANQUE."NOMBRE_VENDEDOR",
+    	ENTRANQUE."SOCIEDAD_CLIENTE",
+    	ENTRANQUE."CLIENTE",
+    	ENTRANQUE."NOMBRE_CLIENTE",
+    	ENTRANQUE."RUT_CLIENTE",
+    	ENTRANQUE."CLIENTE_ID",
+    	ENTRANQUE."TIPO_CLIENTE",
+    	ENTRANQUE."GRUPO",
+    	ENTRANQUE."NOMBRE_GRUPO",
+    	ENTRANQUE."FECHA_VENTA",
+    	ENTRANQUE."YEAR",
+    	ENTRANQUE."MONTH";
+
+view vw_total_ventas_grupo_por_mes as
+    select
+    FROM 
+        vw_ventas_por_sociedad_cliente as ENTRANQUE
+    {
+    	ENTRANQUE."VENDEDOR",
+    	ENTRANQUE."NOMBRE_VENDEDOR",
+    	ENTRANQUE."SOCIEDAD_CLIENTE",
+    	ENTRANQUE."GRUPO",
+    	ENTRANQUE."NOMBRE_GRUPO",
+    	SUM( COALESCE(ENTRANQUE."NETO_USD", 0) ) as "NETO_USD",
+    	ENTRANQUE."YEAR",
+    	ENTRANQUE."MONTH"
+    	
+    }
+    group by
+        ENTRANQUE."VENDEDOR",
+        ENTRANQUE."NOMBRE_VENDEDOR",
+    	ENTRANQUE."SOCIEDAD_CLIENTE",
+    	ENTRANQUE."GRUPO",
+    	ENTRANQUE."NOMBRE_GRUPO",
+    	ENTRANQUE."YEAR",
+    	ENTRANQUE."MONTH";
+    	
+view vw_resumen_ventas_grupo as
+    SELECT
+    FROM
+        vw_total_ventas_por_direccion_despacho
+    {
+    	VENDEDOR,
+    	NOMBRE_VENDEDOR,
+    	SOCIEDAD_CLIENTE,
+    	GRUPO,
+    	NOMBRE_GRUPO,
+    	SUM(LAST_YEAR_NETO_USD) as LAST_YEAR_NETO_USD,
+    	SUM(CURRENT_YEAR_NETO_USD) as CURRENT_YEAR_NETO_USD,
+    	SUM(LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD) as LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD,
+    	SUM(LAST_YEAR_UNTIL_THIS_MONTH_NETO_USD) as LAST_YEAR_UNTIL_THIS_MONTH_NETO_USD,
+    	SUM(LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD) as LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD,
+    	SUM(CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD) as CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD,
+    	SUM(CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD) as CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD,
+    	//SUM(CURRENT_YEAR_UNTIL_THIS_MONTH_NETO_USD) as CURRENT_YEAR_UNTIL_THIS_MONTH_NETO_USD,
+    	SUM(CURRENT_YEAR_MONTH_NETO_USD) as CURRENT_YEAR_MONTH_NETO_USD,
+    	SUM(LAST_YEAR_MONTH_NETO_USD) as LAST_YEAR_MONTH_NETO_USD,
+    	SUM(LAST_YEAR_TO_DAY) as LAST_YEAR_TO_DAY,
+    	SUM(CURRENT_YEAR_TO_DAY) as CURRENT_YEAR_TO_DAY
+
+    }
+    group by
+        VENDEDOR,
+    	NOMBRE_VENDEDOR,
+    	SOCIEDAD_CLIENTE,
+    	GRUPO,
+    	NOMBRE_GRUPO;
+    
+view vw_calculo_credito_por_grupo as
+    SELECT
+    FROM
+        "ServiceNS.services.sd.forecast.data::fc_grupod" AS GRUPO
+    LEFT JOIN
+        KNA1 AS CLIENTE
+    ON CLIENTE.STCD1 = GRUPO.RUT
+    LEFT JOIN
+        KNKK AS CREDITO
+    ON CLIENTE.KUNNR = CREDITO.KUNNR
+    LEFT JOIN
+        T001 AS SOCIEDAD
+    ON CREDITO.KKBER = SOCIEDAD.BUKRS
+    LEFT JOIN
+        vw_currency_sociedad AS CURRENCY
+    ON SOCIEDAD.WAERS = CURRENCY.TCURR
+    LEFT JOIN
+        vw_currency_sociedad_max_date AS MOST_RECENT_CURRENCY_VALUE
+    ON SOCIEDAD.WAERS = MOST_RECENT_CURRENCY_VALUE.TCURR
+    DISTINCT
+    {
+        CLIENTE.KUNNR as CLIENTE,
+        GRUPO.GRUPO as GRUPO,
+        SOCIEDAD.BUKRS AS SOCIEDAD,
+        SOCIEDAD.BUTXT AS NOMBRE_SOCIEDAD,
+        CASE 
+            WHEN SOCIEDAD.WAERS = 'CLP' THEN
+                ROUND( (CREDITO.SAUFT + COALESCE(CREDITO.SKFOR, 0) + CREDITO.SSOBL) * 100  / CURRENCY.UKURS)
+            WHEN SOCIEDAD.WAERS = 'PEN' THEN
+                ROUND ( (CREDITO.SAUFT + COALESCE(CREDITO.SKFOR, 0) + CREDITO.SSOBL) / CURRENCY.UKURS)
+        END AS MONTO_CREDITO_UTILIZADO_USD,
+        CASE 
+            WHEN SOCIEDAD.WAERS = 'CLP' THEN
+                ROUND( ( COALESCE(CREDITO.KLIMK,0) - (CREDITO.SAUFT + COALESCE(CREDITO.SKFOR, 0) + CREDITO.SSOBL ) ) * 100 / CURRENCY.UKURS)
+            WHEN SOCIEDAD.WAERS = 'PEN' THEN
+                ROUND( ( COALESCE(CREDITO.KLIMK,0) - (CREDITO.SAUFT + COALESCE(CREDITO.SKFOR, 0) + CREDITO.SSOBL ) ) / CURRENCY.UKURS)
+        END AS MONTO_CREDITO_DISPONIBLE_USD,
+        CASE 
+            WHEN SOCIEDAD.WAERS = 'CLP' THEN
+                ROUND( COALESCE(CREDITO.KLIMK,0) * 100 / CURRENCY.UKURS )
+            WHEN SOCIEDAD.WAERS = 'PEN' THEN
+                ROUND( COALESCE(CREDITO.KLIMK,0) / CURRENCY.UKURS )
+        END AS MONTO_CREDITO_APROBADO_USD,
+        CASE
+            WHEN CREDITO.NXTRV = '00000000' THEN
+                NULL
+            WHEN CREDITO.NXTRV = '07302020' THEN
+                NULL
+            WHEN CREDITO.NXTRV = '06272020' THEN
+                NULL
+            ELSE
+                TO_DATE(CREDITO.NXTRV, 'YYYYMMDD')
+        END AS FECHA_VENCIMIENTO_CREDITO,
+        CURRENCY.UKURS as VALOR_DOLAR,
+        CURRENCY.GDATU as FECHA_VALOR_DOLAR
+    }
+    WHERE
+        SOCIEDAD.BUKRS != '1200' AND
+        CLIENTE.NODEL != 'X' AND
+        CURRENCY.GDATU = MOST_RECENT_CURRENCY_VALUE.GDATU AND
+        CLIENTE.KTOKD = 'ZD01';
+    
+view vw_resumen_credito_grupo as
+    SELECT
+    FROM
+        vw_calculo_credito_por_grupo
+    {
+        GRUPO,
+        SOCIEDAD,
+        NOMBRE_SOCIEDAD,
+        SUM(MONTO_CREDITO_UTILIZADO_USD) AS MONTO_CREDITO_UTILIZADO_USD,
+        SUM(MONTO_CREDITO_DISPONIBLE_USD) AS MONTO_CREDITO_DISPONIBLE_USD,
+        SUM(MONTO_CREDITO_APROBADO_USD) AS MONTO_CREDITO_APROBADO_USD
+    }
+    group by
+        GRUPO,
+        SOCIEDAD,
+        NOMBRE_SOCIEDAD;
+    
+
+view vw_potencial as
+    select 
+    from 
+        "ServiceNS.services.sd.forecast.data::fc_productivo" as descripcion
+    inner join
+        "ServiceNS.services.sd.forecast.data::fc_productivod" as detalle
+    on 
+        descripcion.GRUPO = detalle.GRUPO
+    left join
+        ZSCP_VARIEDAD as variedad
+    on 
+        detalle.FAMILIA = variedad.FAMILIA AND
+        detalle.ESPECIE = variedad.ESPECIE AND
+        case
+            when detalle.VARIEDAD = '' then
+                '0000'
+            else
+                detalle.VARIEDAD
+        end = 
+        variedad.VARIEDAD
+    {
+        descripcion.VENDEDOR,
+        descripcion.GRUPO,
+        descripcion.LINEA,
+        detalle.FAMILIA,
+        detalle.ESPECIE,
+        detalle.VARIEDAD,
+        detalle.CANTIDAD,
+        COALESCE(variedad.POTENCIAL_FITOSANITARIO + variedad.POTENCIAL_NUTRICION, 0) as POTENCIAL,
+        CASE
+            when 
+                variedad.WAERK is null or
+                variedad.WAERK = '' or
+                variedad.WAERK = ' ' then
+                'USD'
+            else
+                variedad.WAERK
+        end as MONEDA
+    }
+    where 
+        descripcion.LINEA = detalle.LINEA;
+
+view vw_potencial_sumando_cantidad as
+    select
+    from
+        vw_potencial
+    {
+        VENDEDOR,
+        GRUPO,
+        FAMILIA,
+        ESPECIE,
+        VARIEDAD,
+        SUM(CANTIDAD) * POTENCIAL AS POTENCIAL,
+        MONEDA
+    }
+    GROUP BY
+        VENDEDOR,
+        GRUPO,
+        LINEA,
+        FAMILIA,
+        ESPECIE,
+        VARIEDAD,
+        POTENCIAL,
+        MONEDA;
+
+view vw_potencial_sumando_potencial_previamente_agrupado_para_vendedor as
+    select
+    from
+        vw_potencial_sumando_cantidad
+    {
+        VENDEDOR,
+        GRUPO,
+        SUM(POTENCIAL) AS POTENCIAL,
+        MONEDA
+    }
+    GROUP BY
+        VENDEDOR,
+        GRUPO,
+        MONEDA;
+        
+view vw_potencial_sumando_potencial_previamente_agrupado_para_grupo as
+    select
+    from
+        vw_potencial_sumando_cantidad
+    {
+        GRUPO,
+        SUM(POTENCIAL) AS POTENCIAL_TOTAL,
+        MONEDA
+    }
+    GROUP BY
+        GRUPO,
+        MONEDA;
+
+view vw_presupuesto_por_cliente as
+    SELECT 
+    FROM 
+    	KNA1 AS vendedor
+    INNER JOIN 
+    	ZSD_PLAN_003 AS presupuesto
+    ON vendedor.KUNNR = presupuesto.KUNVE 
+    LEFT JOIN 
+        KNA1 as cliente
+    on presupuesto.KUNNR = cliente.KUNNR
+    LEFT JOIN
+        "ServiceNS.services.sd.forecast.data::fc_grupod" as grupo
+    on cliente.STCD1 = grupo.RUT
+    {
+        vendedor.KUNNR as vendedor,
+        presupuesto.KUNNR as cliente,
+        grupo.GRUPO,
+        case
+            WHEN presupuesto.GJAHR = (EXTRACT (YEAR FROM CURRENT_DATE)) AND 
+                 presupuesto.MONAT = (EXTRACT (MONTH FROM CURRENT_DATE)) THEN
+                sum(presupuesto.NETWR) 
+        else
+            0
+        end AS current_year_month_budget,
+        case
+            WHEN presupuesto.GJAHR = EXTRACT (YEAR FROM CURRENT_DATE) AND 
+                 presupuesto.MONAT >= 1 THEN
+                sum(presupuesto.NETWR) 
+        else
+            0
+        end AS current_year_budget
+    }
+    WHERE 
+    	presupuesto.GJAHR = EXTRACT (YEAR FROM CURRENT_DATE) AND 
+    	presupuesto.NVERS = 'P3' AND
+    	vendedor.KTOKD = 'ZD07'
+    GROUP BY
+    	vendedor.KUNNR,
+    	grupo.GRUPO,
+    	presupuesto.KUNNR,
+    	presupuesto.GJAHR,
+        presupuesto.MONAT;
+
+view vw_presupuesto_por_grupo as
+    SELECT 
+    FROM 
+    	KNA1 AS vendedor
+    INNER JOIN 
+    	ZSD_PLAN_003 AS presupuesto
+    ON vendedor.KUNNR = presupuesto.KUNVE 
+    LEFT JOIN 
+        KNA1 as cliente
+    on presupuesto.KUNNR = cliente.KUNNR
+    LEFT JOIN
+        "ServiceNS.services.sd.forecast.data::fc_grupod" as grupo
+    on cliente.STCD1 = grupo.RUT
+    {
+        vendedor.KUNNR as VENDEDOR,
+        grupo.GRUPO as GRUPO,
+        presupuesto.NETWR as PRESUPUESTO,
+        presupuesto.GJAHR as YEAR,
+        presupuesto.MONAT as MONTH
+    }
+    WHERE 
+    	presupuesto.NVERS = 'P3' AND
+    	vendedor.KTOKD = 'ZD07';
+    	
+view vw_presupuesto_por_grupo_totalizado as
+    SELECT 
+    FROM
+        vw_presupuesto_por_grupo
+    {
+        VENDEDOR,
+        GRUPO,
+        SUM(PRESUPUESTO) AS PRESUPUESTO,
+        YEAR,
+        MONTH
+    }
+    GROUP BY
+        VENDEDOR,
+        GRUPO,
+        YEAR,
+        MONTH;
+        
+view vw_resumen_presupuesto_por_grupo as
+    SELECT 
+    FROM
+        vw_presupuesto_por_cliente
+    {
+        vendedor,
+        GRUPO,
+        SUM(current_year_month_budget) as current_year_month_budget,
+        SUM(current_year_budget) as current_year_budget
+    }
+    GROUP BY
+        GRUPO,
+        vendedor;
+        
+view vw_ventas_creditos_presupuesto_potencial as 
+    SELECT
+    FROM
+        vw_resumen_ventas_grupo AS ventas_grupo
+    LEFT JOIN
+        vw_resumen_credito_grupo AS credito_grupo
+    ON 
+        ventas_grupo.GRUPO = credito_grupo.GRUPO AND
+        ventas_grupo.SOCIEDAD_CLIENTE = credito_grupo.SOCIEDAD
+    LEFT JOIN
+        vw_resumen_presupuesto_por_grupo as presupuesto
+    ON 
+        ventas_grupo.GRUPO = presupuesto.GRUPO AND
+        ventas_grupo.VENDEDOR = presupuesto.vendedor
+    //LEFT JOIN
+    //    vw_potencial_sumando_potencial_previamente_agrupado_para_vendedor as potencial
+    //ON 
+    //    ventas_grupo.GRUPO = potencial.GRUPO AND
+    //    ventas_grupo.VENDEDOR = potencial.VENDEDOR
+    LEFT JOIN
+        "ServiceNS.services.sd.potencial.data::potencialcal.vw_cal_potencial_mes" as potencial
+    ON
+        ventas_grupo.GRUPO = potencial."Grupo" AND
+        ventas_grupo.VENDEDOR = potencial."Vendedor"    
+    //LEFT JOIN
+    //    vw_potencial_sumando_potencial_previamente_agrupado_para_grupo as potencial_total
+    //ON 
+    //    ventas_grupo.GRUPO = potencial_total.GRUPO
+    LEFT JOIN
+        "ServiceNS.services.sd.potencial.data::potencialcal.vw_cal_potencial_anual" as potencial_anual
+    ON
+        ventas_grupo.GRUPO = potencial_anual."Grupo" AND
+        ventas_grupo.VENDEDOR = potencial_anual."Vendedor"
+    distinct {
+        ventas_grupo.VENDEDOR,
+    	ventas_grupo.GRUPO,
+    	SOCIEDAD_CLIENTE,
+    	NOMBRE_VENDEDOR,
+    	NOMBRE_GRUPO,
+    	COALESCE(LAST_YEAR_NETO_USD, 0) AS LAST_YEAR_NETO_USD,
+    	COALESCE(CURRENT_YEAR_NETO_USD, 0) AS CURRENT_YEAR_NETO_USD,
+    	COALESCE(LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD, 0) AS LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD,
+    	COALESCE(LAST_YEAR_UNTIL_THIS_MONTH_NETO_USD, 0) AS LAST_YEAR_UNTIL_THIS_MONTH_NETO_USD,
+    	COALESCE(LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD, 0) AS LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD,
+    	COALESCE(CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD, 0) AS CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD,
+    	COALESCE(CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD, 0) AS CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD,
+    	//COALESCE(CURRENT_YEAR_UNTIL_THIS_MONTH_NETO_USD, 0) AS CURRENT_YEAR_UNTIL_THIS_MONTH_NETO_USD,
+    	COALESCE(CURRENT_YEAR_MONTH_NETO_USD, 0) AS CURRENT_YEAR_MONTH_NETO_USD,
+    	COALESCE(LAST_YEAR_TO_DAY, 0) AS LAST_YEAR_TO_DAY,
+    	COALESCE(CURRENT_YEAR_TO_DAY, 0) AS CURRENT_YEAR_TO_DAY,
+    	LAST_YEAR_MONTH_NETO_USD,
+    	CASE
+            WHEN COALESCE(LAST_YEAR_NETO_USD, 0) > 0 THEN
+    	        COALESCE(LAST_YEAR_MONTH_NETO_USD, 0) / LAST_YEAR_NETO_USD
+            ELSE
+                0
+    	END AS LAST_YEAR_MONTH_PERCENTAGE,
+    	COALESCE(MONTO_CREDITO_UTILIZADO_USD, 0) AS MONTO_CREDITO_UTILIZADO_USD,
+        COALESCE(MONTO_CREDITO_DISPONIBLE_USD, 0) AS MONTO_CREDITO_DISPONIBLE_USD,
+        COALESCE(MONTO_CREDITO_APROBADO_USD, 0) AS MONTO_CREDITO_APROBADO_USD,
+        COALESCE(current_year_month_budget, 0) AS CURRENT_YEAR_MONTH_BUDGET,
+        COALESCE(current_year_budget, 0) AS CURRENT_YEAR_BUDGET,
+        //COALESCE(POTENCIAL, 0) AS POTENCIAL,
+        COALESCE("Potencial_mes", 0) AS POTENCIAL,
+        //COALESCE(POTENCIAL_TOTAL, 0) AS POTENCIAL_TOTAL
+        COALESCE("Potencial_anual", 0) AS POTENCIAL_TOTAL
+    };
+    
+view vw_ventas_creditos_presupuesto_grupo as
+    select
+    from
+        vw_ventas_creditos_presupuesto_potencial
+    {
+        VENDEDOR,
+    	GRUPO,
+    	SOCIEDAD_CLIENTE,
+    	NOMBRE_VENDEDOR,
+    	NOMBRE_GRUPO,
+    	LAST_YEAR_NETO_USD, //total de ventas del año pasado
+    	CURRENT_YEAR_NETO_USD, //total de ventas del año actual
+    	LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD, // si el mes actual es 10/2019 seria 1-09 del 2018
+    	LAST_YEAR_UNTIL_THIS_MONTH_NETO_USD, // si el mes actual es 10/2019 seria 1-09 del 2018
+    	LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD, // si el mes actual es 10/2019 seria 11-12 del 2018
+    	CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD, // si el mes actual es 10/2019 seria 11-12 del 2019
+    	CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD, // si el mes actual es 10/2019 seria 01-09 del 2019
+    	//CURRENT_YEAR_UNTIL_THIS_MONTH_NETO_USD,
+    	CURRENT_YEAR_MONTH_NETO_USD, // si el mes actual es 10/2019 10 hasta la fecha
+    	LAST_YEAR_TO_DAY,
+    	CURRENT_YEAR_TO_DAY, // si el mes actual es 10/2019 de deberia 01-10 del 2019
+    	LAST_YEAR_MONTH_NETO_USD,
+    	LAST_YEAR_MONTH_PERCENTAGE,
+    	MONTO_CREDITO_UTILIZADO_USD,
+        MONTO_CREDITO_DISPONIBLE_USD,
+        MONTO_CREDITO_APROBADO_USD,
+        CURRENT_YEAR_MONTH_BUDGET,
+        CURRENT_YEAR_BUDGET,
+        POTENCIAL,
+        POTENCIAL_TOTAL,
+        POTENCIAL * LAST_YEAR_MONTH_PERCENTAGE as POTENCIAL_MES,
+        YEAR(CURRENT_DATE) as CURRENT_YEAR,
+        MONTH(CURRENT_DATE) as CURRENT_MONTH,
+        WEEK(CURRENT_DATE) as CURRENT_WEEK
+    }
+    where GRUPO is not null;
+
+view vw_ventas_forecast as 
+    select from vw_ventas_creditos_presupuesto_grupo as ventas
+    LEFT JOIN "ServiceNS.services.sd.forecast.data::forecastVentas.forecast" as forecast
+        ON  forecast.VENDEDOR = ventas.VENDEDOR AND 
+        forecast.GRUPO = ventas.GRUPO AND
+        forecast.YEAR = ventas.CURRENT_YEAR AND
+        forecast.MONTH = ventas.CURRENT_MONTH AND
+        forecast.WEEK = ventas.CURRENT_WEEK
+    /*LEFT JOIN "ServiceNS.services.sd.forecast.data::forecastVentas.forecast" as lastWeek
+        ON  lastWeek.VENDEDOR = ventas.VENDEDOR 
+        AND lastWeek.GRUPO = ventas.GRUPO 
+        AND lastWeek.YEAR = ventas.CURRENT_YEAR 
+        AND lastWeek.MONTH = ventas.CURRENT_MONTH 
+        AND lastWeek.WEEK = '15' - 1 
+        AND lastWeek.WEEKNUMBER = ROUND(EXTRACT (DAY FROM TO_DATE('20200406', 'YYYYMMDD')) / 7)
+        */
+    LEFT JOIN "ServiceNS.services.sd.forecast.data::forecastVentas.forecast" as lastWeek
+        ON  lastWeek.VENDEDOR = ventas.VENDEDOR 
+        AND lastWeek.GRUPO = ventas.GRUPO 
+        AND lastWeek.YEAR = ventas.CURRENT_YEAR 
+        AND lastWeek.MONTH = ventas.CURRENT_MONTH 
+        AND lastWeek.WEEK = ventas.CURRENT_WEEK - 1 
+        AND lastWeek.WEEKNUMBER = ROUND(EXTRACT (DAY FROM CURRENT_DATE) / 7)
+    {
+        ventas.VENDEDOR,
+    	ventas.GRUPO,
+    	ventas.SOCIEDAD_CLIENTE,
+        ventas.NOMBRE_VENDEDOR,
+        ventas.NOMBRE_GRUPO,
+        ventas.LAST_YEAR_NETO_USD, //total de ventas del año pasado
+        ventas.CURRENT_YEAR_NETO_USD, //total de ventas del año actual
+        ventas.LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD, // si el mes actual es 10/2019 seria 1-09 del 2018
+        ventas.LAST_YEAR_UNTIL_THIS_MONTH_NETO_USD, // si el mes actual es 10/2019 seria 1-09 del 2018
+        ventas.LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD, // si el mes actual es 10/2019 seria 11-12 del 2018
+        ventas.CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD, // si el mes actual es 10/2019 seria 11-12 del 2019
+        ventas.CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD, // si el mes actual es 10/2019 seria 01-09 del 2019
+        //ventas.CURRENT_YEAR_UNTIL_THIS_MONTH_NETO_USD, //
+        CASE 
+            WHEN forecast.F_MES > 0 THEN
+    	       CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD + forecast.F_MES
+            ELSE
+               CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD
+        END AS CURRENT_YEAR_UNTIL_THIS_MONTH_NETO_USD,
+        ventas.CURRENT_YEAR_MONTH_NETO_USD, // si el mes actual es 10/2019 10 hasta la fecha
+        ventas.LAST_YEAR_TO_DAY,
+        ventas.CURRENT_YEAR_TO_DAY, // si el mes actual es 10/2019 de deberia 01-10 del 2019
+        ventas.LAST_YEAR_MONTH_NETO_USD,
+        ventas.LAST_YEAR_MONTH_PERCENTAGE,
+        ventas.MONTO_CREDITO_UTILIZADO_USD,
+        ventas.MONTO_CREDITO_DISPONIBLE_USD,
+        ventas.MONTO_CREDITO_APROBADO_USD,
+        ventas.CURRENT_YEAR_MONTH_BUDGET,
+        ventas.CURRENT_YEAR_BUDGET,
+        ventas.POTENCIAL,
+        ventas.POTENCIAL_TOTAL,
+        ventas.CURRENT_YEAR_NETO_USD + ventas.LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD AS LAST_YEAR_SALE_FORECAST, //pronostico de ventas del año actual
+        // COALESCE(ventas.CURRENT_YEAR_NETO_USD + forecast.F_MES + forecast.F_FORWARD, 0) AS FORECAST_YEAR, //pronostico de ventas del año actual
+        COALESCE(ventas.CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD + forecast.F_MES + forecast.F_FORWARD, 0) AS FORECAST_YEAR, //pronostico de ventas del año actual
+        ventas.CURRENT_YEAR,
+        ventas.CURRENT_MONTH,
+        ventas.CURRENT_WEEK,
+        COALESCE(forecast.F_MES, 0) AS F_MES,
+    	COALESCE(forecast.F_FORWARD, 0) AS F_FORWARD,
+    	COALESCE(lastWeek.F_MES, 0) AS LW_MES,
+    	COALESCE(lastWeek.F_FORWARD, 0) AS LW_FORWARD,
+    	forecast.CURRENCY,
+    	CASE
+            WHEN forecast.F_MES > 0 THEN
+    	       TO_INT( (ventas.CURRENT_YEAR_TO_DAY / COALESCE(forecast.F_MES, 0)) * 100)
+            ELSE
+                0
+    	END AS FULLFILLMENT,
+    	CASE
+            WHEN forecast.F_MES + forecast.F_FORWARD > 0 THEN
+    	       TO_INT( (ventas.CURRENT_YEAR_NETO_USD * 100 )/ (ventas.CURRENT_YEAR_NETO_USD + forecast.F_FORWARD) )
+            ELSE
+                0
+    	END AS FULLFILLMENT_YEAR,
+    	CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD - LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD AS DELTA_UNTIL_LAST_MONTH,
+    	CASE 
+            WHEN forecast.F_MES > 0 THEN
+    	       CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD + forecast.F_MES - LAST_YEAR_UNTIL_THIS_MONTH_NETO_USD
+            ELSE
+               CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD - LAST_YEAR_UNTIL_THIS_MONTH_NETO_USD
+        END AS DELTA_UNTIL_THIS_MONTH
+    } WHERE (ventas.LAST_YEAR_NETO_USD > 0 
+         OR ventas.CURRENT_YEAR_NETO_USD > 0 
+         OR ventas.POTENCIAL > 0);
+         //AND forecast.WEEK = WEEK (CURRENT_DATE);
+         
+
+
+view vw_forecast_first as
+    SELECT FROM "ServiceNS.services.sd.forecast.data::forecastVentas.weeklyForecast" as forecast
+    {
+        VENDEDOR, 
+        GRUPO,
+        YEAR,
+        MONTH,
+        WEEK,
+        WEEKNUMBER,
+        F_MES AS F_CMES,
+        F_FORWARD AS F_CFORWARD,
+        STATUS,
+        CURRENCY
+    }WHERE "WEEKNUMBER" = '1';
+
+
+view vw_forecast_last as
+    SELECT FROM "ServiceNS.services.sd.forecast.data::forecastVentas.weeklyForecast" as forecast
+    {
+        VENDEDOR, 
+        GRUPO,
+        YEAR,
+        MONTH,
+        WEEK,
+        WEEKNUMBER,
+        F_MES,
+        F_FORWARD,
+        STATUS,
+        CURRENCY
+    }WHERE "WEEK" = WEEK(CURRENT_DATE);
+
+
+
+
+/*
+* VALIDACIONES
+*/
+view vw_contactoup as 
+    SELECT FROM 
+        "ServiceNS.services.sd.forecast.data::fc_productivo" as productivo
+        LEFT JOIN "ServiceNS.services.sd.forecast.data::fc_contactoup" as up on up.GRUPO = productivo.GRUPO AND productivo.LINEA = productivo.LINEA
+    DISTINCT {
+        productivo.VENDEDOR as VENDEDOR, 
+        productivo.GRUPO as GRUPO,
+        up.NOMBRE,
+        up.TIPO,
+        up.CARGO
+    };   
+view vw_resumen_validacion as 
+    SELECT FROM vw_ventas_forecast as fcst
+        LEFT JOIN "ServiceNS.services.sd.forecast.data::fc_productivo" as productivo on fcst.GRUPO = productivo.GRUPO AND fcst.VENDEDOR = productivo.VENDEDOR
+        LEFT JOIN "ServiceNS.services.sd.forecast.data::fc_productivod" as proddetalle on productivo.GRUPO = proddetalle.GRUPO AND productivo.LINEA = proddetalle.LINEA
+    {
+        fcst.VENDEDOR as VENDEDOR, 
+        fcst.GRUPO as GRUPO,
+        fcst.NOMBRE_GRUPO as NOMBRE_GRUPO,
+        //productivo.TIPO as TIPO,
+        COUNT(DISTINCT productivo.LINEA) AS C_UP,
+        COUNT(proddetalle.FAMILIA) AS C_FAMILIA,
+        COUNT( case when proddetalle.VARIEDAD != '' AND proddetalle.VARIEDAD != '0000' then 1 end) AS C_VARIEDAD,
+        COUNT( case when proddetalle.EDAD != '' then 1 end) AS C_EDAD
+    } 
+    //WHERE productivo.TIPO != '3' 
+    GROUP BY fcst.VENDEDOR, fcst.GRUPO, fcst.NOMBRE_GRUPO;
+
+view vw_validacion as 
+    SELECT FROM vw_resumen_validacion as validacion
+    {
+        validacion.VENDEDOR,
+        validacion.GRUPO,
+        CASE
+            WHEN C_UP > 0 AND C_FAMILIA = C_EDAD AND C_FAMILIA = C_VARIEDAD THEN 'X' 
+        END AS CHECK
+    };
+}

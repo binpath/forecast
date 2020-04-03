@@ -1,0 +1,7 @@
+{ "ServiceNS.services.sd.forecast.data::fc_contactoup" : {
+       "target" : {
+            "schema": "NSAGRO",
+            "object": "FC_CONTACTOUP"
+                  },
+       "schema": "NSAGRO64"
+} }

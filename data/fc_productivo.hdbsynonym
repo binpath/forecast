@@ -1,0 +1,7 @@
+{ "ServiceNS.services.sd.forecast.data::fc_productivo" : {
+       "target" : {
+            "schema": "NSAGRO",
+            "object": "FC_PRODUCTIVO"
+                  },
+       "schema": "NSAGRO64"
+} }

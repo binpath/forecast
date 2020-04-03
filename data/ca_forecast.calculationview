@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="ca_forecast" applyPrivilegeType="ANALYTIC_PRIVILEGE" dataCategory="CUBE" schemaVersion="2.3" defaultClient="$$client$$" visibility="reportingEnabled" outputViewType="Aggregation" calculationScenarioType="TREE_BASED" enforceSqlExecution="false">
+<descriptions defaultDescription="ca_forecast"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="ServiceNS.services.sd.forecast.data::forecastcal.vw_total_ventas_grupo_por_mes" type="DATA_BASE_VIEW">
+    <viewAttributes allViewAttributes="true"/>
+    <columnObject schemaName="NSAGRO64" columnObjectName="ServiceNS.services.sd.forecast.data::forecastcal.vw_total_ventas_grupo_por_mes"/>
+  </DataSource>
+  <DataSource id="ServiceNS.services.sd.forecast.data::forecastcal.vw_presupuesto_por_grupo_totalizado" type="DATA_BASE_VIEW">
+    <viewAttributes allViewAttributes="true"/>
+    <columnObject schemaName="NSAGRO64" columnObjectName="ServiceNS.services.sd.forecast.data::forecastcal.vw_presupuesto_por_grupo_totalizado"/>
+  </DataSource>
+</dataSources>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Ventas">
+    <viewAttributes>
+      <viewAttribute id="YEAR"/>
+      <viewAttribute id="MONTH"/>
+      <viewAttribute id="VENDEDOR"/>
+      <viewAttribute id="SOCIEDAD_CLIENTE"/>
+      <viewAttribute id="GRUPO"/>
+      <viewAttribute id="NETO_USD"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#ServiceNS.services.sd.forecast.data::forecastcal.vw_total_ventas_grupo_por_mes">
+      <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="VENDEDOR" source="VENDEDOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOCIEDAD_CLIENTE" source="SOCIEDAD_CLIENTE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GRUPO" source="GRUPO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="NETO_USD" source="NETO_USD"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Presupuesto">
+    <viewAttributes>
+      <viewAttribute id="VENDEDOR"/>
+      <viewAttribute id="GRUPO"/>
+      <viewAttribute id="PRESUPUESTO"/>
+      <viewAttribute id="YEAR"/>
+      <viewAttribute id="MONTH"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#ServiceNS.services.sd.forecast.data::forecastcal.vw_presupuesto_por_grupo_totalizado">
+      <mapping xsi:type="Calculation:AttributeMapping" target="VENDEDOR" source="VENDEDOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GRUPO" source="GRUPO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="PRESUPUESTO" source="PRESUPUESTO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+    </input>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinType="leftOuter" cardinality="C1_1">
+    <viewAttributes>
+      <viewAttribute id="YEAR"/>
+      <viewAttribute id="MONTH"/>
+      <viewAttribute id="VENDEDOR"/>
+      <viewAttribute id="SOCIEDAD_CLIENTE"/>
+      <viewAttribute id="GRUPO"/>
+      <viewAttribute id="NETO_USD"/>
+      <viewAttribute id="PRESUPUESTO"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#Ventas">
+      <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="VENDEDOR" source="VENDEDOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SOCIEDAD_CLIENTE" source="SOCIEDAD_CLIENTE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GRUPO" source="GRUPO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="NETO_USD" source="NETO_USD"/>
+    </input>
+    <input node="#Presupuesto">
+      <mapping xsi:type="Calculation:AttributeMapping" target="PRESUPUESTO" source="PRESUPUESTO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="VENDEDOR" source="VENDEDOR"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="GRUPO" source="GRUPO"/>
+    </input>
+  
+    <joinAttribute name="VENDEDOR"/>
+    <joinAttribute name="GRUPO"/>
+  </calculationView>
+</calculationViews>
+<logicalModel id="Join_1">
+  <attributes>
+    <attribute id="YEAR" order="1" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="YEAR"/>
+      <keyMapping columnObjectName="Join_1" columnName="YEAR"/>
+    </attribute>
+    <attribute id="MONTH" order="2" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="MONTH"/>
+      <keyMapping columnObjectName="Join_1" columnName="MONTH"/>
+    </attribute>
+    <attribute id="VENDEDOR" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="VENDEDOR"/>
+      <keyMapping columnObjectName="Join_1" columnName="VENDEDOR"/>
+    </attribute>
+    <attribute id="SOCIEDAD_CLIENTE" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="SOCIEDAD_CLIENTE"/>
+      <keyMapping columnObjectName="Join_1" columnName="SOCIEDAD_CLIENTE"/>
+    </attribute>
+    <attribute id="GRUPO" order="5" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="GRUPO"/>
+      <keyMapping columnObjectName="Join_1" columnName="GRUPO"/>
+    </attribute>
+    <attribute id="PRESUPUESTO" order="7" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="PRESUPUESTO"/>
+      <keyMapping columnObjectName="Join_1" columnName="PRESUPUESTO"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="NETO_USD" order="6" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="NETO_USD"/>
+      <measureMapping columnObjectName="Join_1" columnName="NETO_USD"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Ventas" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="76" y="271"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Presupuesto" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="124" y="339"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+    <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="43" y="256"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

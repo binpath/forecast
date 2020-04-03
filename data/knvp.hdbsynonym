@@ -1,0 +1,7 @@
+{ "ServiceNS.services.sd.forecast.data::knvp" : {
+       "target" : {
+            "schema": "NSAGRO64",
+            "object": "KNVP"
+                  },
+       "schema": "NSAGRO"
+} }
