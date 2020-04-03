@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="CA_RESUMEN_VENDEDORES" applyPrivilegeType="ANALYTIC_PRIVILEGE" dataCategory="CUBE" schemaVersion="2.3" defaultClient="$$client$$" visibility="reportingEnabled" outputViewType="Aggregation" calculationScenarioType="TREE_BASED" enforceSqlExecution="false">
+<descriptions defaultDescription="CA_RESUMEN_VENDEDORES"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="ServiceNS.services.sd.forecast.data::forecastcal.vw_resumen_vendedores" type="DATA_BASE_VIEW">
+    <viewAttributes allViewAttributes="true"/>
+    <columnObject schemaName="NSAGRO64" columnObjectName="ServiceNS.services.sd.forecast.data::forecastcal.vw_resumen_vendedores"/>
+  </DataSource>
+</dataSources>
+<calculationViews>
+  <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+    <viewAttributes>
+      <viewAttribute id="LAST_YEAR_TO_DAY"/>
+      <viewAttribute id="TUSUARIO"/>
+      <viewAttribute id="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <viewAttribute id="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+      <viewAttribute id="USUARIO"/>
+      <viewAttribute id="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <viewAttribute id="LAST_YEAR_MONTH_PERCENTAGE"/>
+      <viewAttribute id="CURRENT_YEAR_MONTH_NETO_USD"/>
+      <viewAttribute id="CURRENT_YEAR_NETO_USD"/>
+      <viewAttribute id="LAST_YEAR_NETO_USD"/>
+      <viewAttribute id="ACTIVO"/>
+      <viewAttribute id="KUNJO"/>
+      <viewAttribute id="NAME1"/>
+      <viewAttribute id="KUNVE"/>
+      <viewAttribute id="LAST_YEAR_MONTH_NETO_USD"/>
+      <viewAttribute id="KUNZO"/>
+      <viewAttribute id="CURRENT_YEAR_TO_DAY"/>
+      <viewAttribute id="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <input node="#ServiceNS.services.sd.forecast.data::forecastcal.vw_resumen_vendedores">
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_TO_DAY" source="LAST_YEAR_TO_DAY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="TUSUARIO" source="TUSUARIO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD" source="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD" source="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="USUARIO" source="USUARIO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD" source="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_MONTH_PERCENTAGE" source="LAST_YEAR_MONTH_PERCENTAGE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_MONTH_NETO_USD" source="CURRENT_YEAR_MONTH_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_NETO_USD" source="CURRENT_YEAR_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_NETO_USD" source="LAST_YEAR_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="ACTIVO" source="ACTIVO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="KUNJO" source="KUNJO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="KUNVE" source="KUNVE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="LAST_YEAR_MONTH_NETO_USD" source="LAST_YEAR_MONTH_NETO_USD"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="KUNZO" source="KUNZO"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_TO_DAY" source="CURRENT_YEAR_TO_DAY"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD" source="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+    </input>
+  </calculationView>
+</calculationViews>
+<logicalModel id="Projection_1">
+  <attributes>
+    <attribute id="TUSUARIO" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="TUSUARIO"/>
+      <keyMapping columnObjectName="Projection_1" columnName="TUSUARIO"/>
+    </attribute>
+    <attribute id="USUARIO" order="5" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="USUARIO"/>
+      <keyMapping columnObjectName="Projection_1" columnName="USUARIO"/>
+    </attribute>
+    <attribute id="LAST_YEAR_MONTH_PERCENTAGE" order="7" semanticType="empty" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="LAST_YEAR_MONTH_PERCENTAGE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="LAST_YEAR_MONTH_PERCENTAGE"/>
+    </attribute>
+    <attribute id="ACTIVO" order="11" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="ACTIVO"/>
+      <keyMapping columnObjectName="Projection_1" columnName="ACTIVO"/>
+    </attribute>
+    <attribute id="KUNJO" order="12" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="KUNJO"/>
+      <keyMapping columnObjectName="Projection_1" columnName="KUNJO"/>
+    </attribute>
+    <attribute id="NAME1" order="13" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="NAME1"/>
+      <keyMapping columnObjectName="Projection_1" columnName="NAME1"/>
+    </attribute>
+    <attribute id="KUNVE" order="14" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="KUNVE"/>
+      <keyMapping columnObjectName="Projection_1" columnName="KUNVE"/>
+    </attribute>
+    <attribute id="KUNZO" order="16" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="KUNZO"/>
+      <keyMapping columnObjectName="Projection_1" columnName="KUNZO"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="LAST_YEAR_TO_DAY" order="1" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="LAST_YEAR_TO_DAY"/>
+      <measureMapping columnObjectName="Projection_1" columnName="LAST_YEAR_TO_DAY"/>
+    </measure>
+    <measure id="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD" order="3" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CURRENT_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+    </measure>
+    <measure id="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD" order="4" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+      <measureMapping columnObjectName="Projection_1" columnName="LAST_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+    </measure>
+    <measure id="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD" order="6" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+      <measureMapping columnObjectName="Projection_1" columnName="LAST_YEAR_UNTIL_LAST_MONTH_NETO_USD"/>
+    </measure>
+    <measure id="CURRENT_YEAR_MONTH_NETO_USD" order="8" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="CURRENT_YEAR_MONTH_NETO_USD"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CURRENT_YEAR_MONTH_NETO_USD"/>
+    </measure>
+    <measure id="CURRENT_YEAR_NETO_USD" order="9" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="CURRENT_YEAR_NETO_USD"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CURRENT_YEAR_NETO_USD"/>
+    </measure>
+    <measure id="LAST_YEAR_NETO_USD" order="10" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="LAST_YEAR_NETO_USD"/>
+      <measureMapping columnObjectName="Projection_1" columnName="LAST_YEAR_NETO_USD"/>
+    </measure>
+    <measure id="LAST_YEAR_MONTH_NETO_USD" order="15" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="LAST_YEAR_MONTH_NETO_USD"/>
+      <measureMapping columnObjectName="Projection_1" columnName="LAST_YEAR_MONTH_NETO_USD"/>
+    </measure>
+    <measure id="CURRENT_YEAR_TO_DAY" order="17" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="CURRENT_YEAR_TO_DAY"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CURRENT_YEAR_TO_DAY"/>
+    </measure>
+    <measure id="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD" order="18" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+      <measureMapping columnObjectName="Projection_1" columnName="CURRENT_YEAR_FROM_THIS_MONTH_ONWARDS_NETO_USD"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="91" y="232"/>
+      <rectangleSize height="30" width="140"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

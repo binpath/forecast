@@ -1,0 +1,13 @@
+service namespace "ServiceNS.services.sd.forecast.services" {
+    "ServiceNS.services.sd.forecast.data::ca_forecast_manager" as "Forecast" keys generate local  "ID"
+    
+    aggregates always ; 
+    
+    
+    
+ 
+}
+
+annotations {
+   enable OData4SAP;
+}
